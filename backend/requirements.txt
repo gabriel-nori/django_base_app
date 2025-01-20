@@ -1,0 +1,4 @@
+app==0.0.1
+Django==5.1.5
+psycopg2==2.9.10
+python-dotenv==1.0.1
