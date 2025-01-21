@@ -68,17 +68,17 @@ Access the application at `http://127.0.0.1:8000/`.
 ## Project Structure
 
 ```plaintext
-backend
-├── manage.py
-├── app_base/        # Main app folder
-│   ├── settings/    # Organized settings (base, dev, prod)
-│   ├── static/      # Static files
-│   ├── templates/   # HTML templates
-│   ├── urls.py      # Project URL configurations
-│   ├── wsgi.py      # WSGI application
-├── .env.example     # Sample environment variables
-├── requirements.txt # Project dependencies
-├── README.md        # Project documentation
+backend/
+    ├── manage.py
+    ├── config/        # Main app folder
+    │   ├── settings    # Organized settings
+    │   ├── urls.py      # Project URL configurations
+    │   ├── wsgi.py      # WSGI application
+    ├── api/        # Main api folder
+    ├── apps/        # Main app folder. All created apps goes in this directory
+    ├── .env.example     # Sample environment variables
+    ├── requirements.txt # Project dependencies
+README.md        # Project documentation
 ```
 
 ## Deployment
