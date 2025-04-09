@@ -32,8 +32,8 @@ cd django-app-base
 ### 2. Set Up a Virtual Environment
 
 ```bash
-python -m venv env
-source env/bin/activate  # On Windows: env\Scripts\activate
+python -m venv .venv
+source .venv/bin/activate  # On Windows: env\Scripts\activate
 ```
 
 ### 3. Install Dependencies
