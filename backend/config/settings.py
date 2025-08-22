@@ -4,40 +4,43 @@ import base64
 import sys
 import os
 
-env_file_path = os.getcwd() + "/.env"
+env_file_path: str = os.getcwd() + "/.env"
 
-env_loaded = load_dotenv(dotenv_path=env_file_path, override=True)
-DB_NAME = os.getenv("DB_NAME")
-DB_USER = os.getenv("DB_USER")
-DB_PASS = os.getenv("DB_PASS")
-DB_HOST = os.getenv("DB_HOST")
+env_loaded: bool = load_dotenv(dotenv_path=env_file_path, override=True)
+DB_NAME: str = os.getenv("DB_NAME", "")
+DB_USER: str = os.getenv("DB_USER", "")
+DB_PASS:str = os.getenv("DB_PASS", "")
+DB_HOST: str = os.getenv("DB_HOST", "")
 
-APP_NAME = os.getenv("APP_NAME", "django base app")
-APP_DESCRIPTION = os.getenv("APP_DESCRIPTION", "django base app")
+APP_NAME: str = os.getenv("APP_NAME", "django base app")
+APP_DESCRIPTION: str = os.getenv("APP_DESCRIPTION", "django base app")
 
-LOG_LEVEL = os.getenv("LOG_LEVEL", "info")
+LOG_LEVEL: str = os.getenv("LOG_LEVEL", "info")
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR: Path = Path(__file__).resolve().parent.parent
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
-
+DEFAULT_SECRET_KEY: str = 'django-insecure-dca8=1qpcbj*8!97yxaihy8!(0#*f)uosxqrsh&3oy)44&s$m6'
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-dca8=1qpcbj*8!97yxaihy8!(0#*f)uosxqrsh&3oy)44&s$m6'
+SECRET_KEY: str = os.getenv("SECRET_KEY", DEFAULT_SECRET_KEY)
+
+ENV_NAME: str = os.getenv("ENV_NAME", "DEV")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG: bool = ENV_NAME == "DEV"
 
-ALLOWED_HOSTS = []
+if SECRET_KEY == DEFAULT_SECRET_KEY and ENV_NAME != "DEV":
+    raise Exception("Can't use default env secret key for production")
+
+ALLOWED_HOSTS: list[str] = os.getenv("ALLOWED_HOSTS", "").split(",") if not DEBUG else []
 
 
 # Application definition
 
 
-DJANGO_APPS = [
+DJANGO_APPS: list[str] = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -47,21 +50,21 @@ DJANGO_APPS = [
     "django_filters",
 ]
 
-USER_APPS =[
+USER_APPS: list[str] =[
     'apps.apps.AppsConfig',
     'api.apps.ApiConfig',
 ]
 
-THIRD_PARTY = [
+THIRD_PARTY: list[str] = [
     'jazzmin',
     "rest_framework",
     "rest_framework.authtoken",
     "drf_yasg",
 ]
 
-INSTALLED_APPS = THIRD_PARTY + DJANGO_APPS + USER_APPS
+INSTALLED_APPS: list[str] = THIRD_PARTY + DJANGO_APPS + USER_APPS
 
-REST_FRAMEWORK = {
+REST_FRAMEWORK: dict[str, list|int|str] = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
     "DEFAULT_PERMISSION_CLASSES": [
@@ -77,7 +80,7 @@ REST_FRAMEWORK = {
     "PAGE_SIZE": 10,
 }
 
-MIDDLEWARE = [
+MIDDLEWARE: list[str] = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -90,7 +93,7 @@ MIDDLEWARE = [
 
 # DJANGO_APPS = DJANGO_APPS + MIDDLEWARE
 
-ROOT_URLCONF = 'config.urls'
+ROOT_URLCONF: str = 'config.urls'
 
 TEMPLATES = [
     {
@@ -121,7 +124,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {
+DATABASES: dict[str, dict[str, str]] = {
     'default': {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": DB_NAME,
