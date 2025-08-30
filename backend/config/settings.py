@@ -1,4 +1,5 @@
 from dotenv import load_dotenv
+from datetime import timedelta
 from pathlib import Path
 import base64
 import sys
@@ -58,24 +59,23 @@ USER_APPS: list[str] =[
 THIRD_PARTY: list[str] = [
     'jazzmin',
     "rest_framework",
-    "rest_framework.authtoken",
+    "rest_framework_simplejwt",
     "drf_yasg",
 ]
 
 INSTALLED_APPS: list[str] = THIRD_PARTY + DJANGO_APPS + USER_APPS
 
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+}
+
 REST_FRAMEWORK: dict[str, list|int|str] = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
-    "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly",
-        "rest_framework.permissions.IsAuthenticated",
-    ],
+    "DEFAULT_AUTHENTICATION_CLASSES": ["rest_framework_simplejwt.authentication.JWTAuthentication"],
+    "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
     "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
-    "DEFAULT_AUTHENTICATION_CLASSES": [
-        "rest_framework.authentication.TokenAuthentication",
-        "rest_framework.authentication.SessionAuthentication",
-    ],
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 10,
 }
