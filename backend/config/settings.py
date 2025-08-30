@@ -34,7 +34,7 @@ DEBUG: bool = ENV_NAME == "DEV"
 if SECRET_KEY == DEFAULT_SECRET_KEY and ENV_NAME != "DEV":
     raise Exception("Can't use default env secret key for production")
 
-ALLOWED_HOSTS: list[str] = os.getenv("ALLOWED_HOSTS", "").split(",") if not DEBUG else []
+ALLOWED_HOSTS: list[str] = os.getenv("ALLOWED_HOSTS", "").split(",") if not DEBUG else ["*"]
 
 
 # Application definition
@@ -186,3 +186,14 @@ if "test" in sys.argv:
             "timeout": 20,
         }
     }
+
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'Token': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header',
+            'description': 'Token-based authentication using the format: Token <your-token>',
+        }
+    }
+}

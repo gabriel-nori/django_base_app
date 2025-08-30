@@ -1,4 +1,5 @@
 # DRF:
+from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.views import obtain_auth_token
 # from rest_framework.schemas import get_schema_view
 from rest_framework.routers import DefaultRouter
@@ -38,6 +39,7 @@ schema_view = get_schema_view(
     ),
     public=True,
     permission_classes=(permissions.AllowAny,),
+    authentication_classes=(TokenAuthentication,),
 )
 
 urlpatterns = [
@@ -46,7 +48,7 @@ urlpatterns = [
     path(
         "api/swagger/",
         schema_view.with_ui("swagger", cache_timeout=0),
-        name="ledger-swagger-ui",
+        name="{}-swagger-ui".format(settings.APP_NAME),
     ),
     path("api/", include("rest_framework.urls")),
 ]
