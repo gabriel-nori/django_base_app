@@ -1,0 +1,69 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Python
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg
+*.egg-info
+dist
+build
+pip-log.txt
+pip-delete-this-directory.txt
+.tox
+.coverage
+.coverage.*
+.pytest_cache
+.mypy_cache
+.pyre
+.pytype
+
+# Virtual Environments
+venv
+env
+ENV
+.venv
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Deploy folder (build context is parent directory)
+deploy/
+
+# Environment files
+.env
+.env.*
+
+# Documentation
+*.md
+
+# Database
+*.db
+*.sqlite3
+
+# Logs
+*.log
+
+# Static files (will be collected during build)
+backend/static/*
+!backend/static/.gitkeep
+
+# Media files
+backend/media/*
+
+# Tests
+**/tests.py
+**/test_*.py
+**/*_test.py
+**/test_helpers.py
+

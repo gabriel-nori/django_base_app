@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    container_name: this-is-me-backend
+    restart: unless-stopped
+    environment:
+      ENV_NAME: ${ENV_NAME:-PROD}
+      SECRET_KEY: ${SECRET_KEY}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+      DB_HOST: ${DB_HOST}
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT:-6379}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      USE_REDIS_CACHE: ${USE_REDIS_CACHE:-true}
+      REDIS_DB_INDEX: ${REDIS_DB_INDEX:-1}
+      REDIS_USE_SSL: ${REDIS_USE_SSL:-false}
+      ALLOWED_HOSTS: ${ALLOWED_HOSTS}
+      APP_NAME: ${APP_NAME:-This Is Me}
+      APP_DESCRIPTION: ${APP_DESCRIPTION:-This Is Me Backend API}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+    ports:
+      - "${PORT:-8000}:8000"
+    volumes:
+      - static_volume:/backend/static
+    # Use host network to access external services
+    network_mode: "host"
+    command:
+      - /bin/sh
+      - -c
+      - |
+        python manage.py collectstatic --noinput &&
+        python manage.py migrate --noinput &&
+        python manage.py initialize_objects &&
+        gunicorn config.wsgi:application \
+          --bind 0.0.0.0:8000 \
+          --workers 4 \
+          --threads 2 \
+          --worker-class gthread \
+          --worker-tmp-dir /dev/shm \
+          --log-level info \
+          --access-logfile - \
+          --error-logfile - \
+          --timeout 120 \
+          --graceful-timeout 30
+
+volumes:
+  static_volume:
+
