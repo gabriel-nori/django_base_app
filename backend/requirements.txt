@@ -1,7 +1,7 @@
 app==0.0.1
 asgiref==3.8.1
 attrs==25.3.0
-Django==5.1.5
+Django==5.2.8
 django-cors-headers==4.6.0
 django-filter==25.1
 django-jazzmin==3.0.1
