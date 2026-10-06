@@ -62,3 +62,26 @@ class PublicPrivateRoutesTestCase(APITestCase):
         self.client.credentials(HTTP_AUTHORIZATION="Bearer invalid.token.value")
         response = self.client.get(ME_URL)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+
+class OpenApiSchemaTestCase(APITestCase):
+    def get_schema(self):
+        response = self.client.get("/api/schema/?format=json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        return response.json()
+
+    def test_schema_is_openapi_3(self):
+        self.assertTrue(self.get_schema()["openapi"].startswith("3."))
+
+    def test_schema_ignores_invalid_token(self):
+        self.client.credentials(HTTP_AUTHORIZATION="Bearer invalid.token.value")
+        self.get_schema()
+
+    def test_security_by_route(self):
+        paths = self.get_schema()["paths"]
+        self.assertEqual(paths[ME_URL]["get"]["security"], [{"jwtAuth": []}])
+        self.assertEqual(paths[SIGNUP_URL]["post"]["security"], [{"jwtAuth": []}, {}])
+
+    def test_docs_ui(self):
+        for url in ("/api/swagger/", "/api/redoc/"):
+            self.assertEqual(self.client.get(url).status_code, status.HTTP_200_OK)

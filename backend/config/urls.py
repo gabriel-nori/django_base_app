@@ -1,10 +1,8 @@
-# DRF:
-from rest_framework_simplejwt.authentication import JWTAuthentication
-from drf_yasg.views import get_schema_view
-from rest_framework import permissions
-from drf_yasg import openapi
-
-# Django:
+from drf_spectacular.views import (
+    SpectacularAPIView,
+    SpectacularRedocView,
+    SpectacularSwaggerView,
+)
 from django.urls import include, path, re_path
 from django.contrib import admin
 
@@ -22,29 +20,22 @@ Layout:
     admin/            Django admin
     api/public/       Open routes (api/public_urls.py)
     api/private/      Authenticated routes (api/private_urls.py)
-    api/swagger/      API docs
+    api/schema/       OpenAPI 3 schema (YAML, or JSON with ?format=json)
+    api/swagger/      Swagger UI
+    api/redoc/        ReDoc
     everything else   SPA index.html, when SERVE_SPA=true
 """
-
-schema_view = get_schema_view(
-    openapi.Info(
-        title=settings.APP_NAME,
-        default_version="v1",
-        description=settings.APP_DESCRIPTION,
-    ),
-    public=True,
-    permission_classes=(permissions.AllowAny,),
-    authentication_classes=(JWTAuthentication,),
-)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include("api.urls")),
+    path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     path(
         "api/swagger/",
-        schema_view.with_ui("swagger", cache_timeout=0),
-        name="{}-swagger-ui".format(settings.APP_NAME),
+        SpectacularSwaggerView.as_view(url_name="schema"),
+        name="swagger-ui",
     ),
+    path("api/redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
     path("api/", include("rest_framework.urls")),
 ]
 

@@ -15,7 +15,7 @@ django-redis==7.0.0
 # REST Framework
 djangorestframework==3.18.1
 djangorestframework-simplejwt==5.5.1
-drf-yasg==1.21.17
+drf-spectacular==0.30.0
 
 # Database
 # SQLite is built in. PostgreSQL driver below.
@@ -59,7 +59,6 @@ django-celery-beat==2.9.0
 Markdown==3.11
 PyYAML==6.0.3
 uritemplate==4.2.0
-swagger-spec-validator==3.0.4
 
 # Utilities
 inflection==0.5.1

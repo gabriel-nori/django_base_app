@@ -113,7 +113,7 @@ THIRD_PARTY: list[str] = [
     "jazzmin",
     "rest_framework",
     "rest_framework_simplejwt",
-    "drf_yasg",
+    "drf_spectacular",
     "corsheaders",
     "django_celery_results",
     "django_celery_beat",
@@ -140,6 +140,7 @@ REST_FRAMEWORK: dict[str, list | int | str] = {
     "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 10,
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
 MIDDLEWARE: list[str] = [
@@ -288,19 +289,22 @@ if "test" in sys.argv:
         },
     }
 
-SWAGGER_SETTINGS = {
-    "SECURITY_DEFINITIONS": {
-        "Bearer": {
-            "type": "apiKey",
-            "name": "Authorization",
-            "in": "header",
-            "description": "JWT authentication using the format: Bearer <access-token>",
-        }
+# OpenAPI 3 schema (drf-spectacular). JWT security scheme in api/schema.py
+SPECTACULAR_SETTINGS = {
+    "TITLE": APP_NAME,
+    "DESCRIPTION": APP_DESCRIPTION,
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    # Schema is public and must not fail when the browser sends an expired token
+    "SERVE_AUTHENTICATION": [],
+    # Tags by app (users, token...) instead of public/private
+    "SCHEMA_PATH_PREFIX": r"/api/(public|private)",
+    # Separate request/response components so write only fields (password) are correct
+    "COMPONENT_SPLIT_REQUEST": True,
+    "SWAGGER_UI_SETTINGS": {
+        "persistAuthorization": True,
     },
-    "USE_SESSION_AUTH": False,
-    "PERSIST_AUTH": True,
 }
-SWAGGER_USE_COMPAT_RENDERERS = False
 
 # Celery Configuration
 CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL", "")

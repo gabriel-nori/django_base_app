@@ -3,7 +3,7 @@ from django.urls import include, path
 
 urlpatterns = [
     # api/public/...  -> no authentication required
-    path("public/", include(("api.public_urls", PUBLIC_NAMESPACE))),
+    path(f"{PUBLIC_NAMESPACE}/", include(("api.public_urls", PUBLIC_NAMESPACE))),
     # api/private/... -> authentication required
-    path("private/", include(("api.private_urls", PRIVATE_NAMESPACE))),
+    path(f"{PRIVATE_NAMESPACE}/", include(("api.private_urls", PRIVATE_NAMESPACE))),
 ]
