@@ -2,7 +2,7 @@ image:
   repository: ghcr.io/YOUR_GITHUB_USER/django-base-app
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "latest"
+  tag: "main-e073828"
 
 imagePullSecrets:
   - name: ghcr-pull-secret
