@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# Production Stop Script for This Is Me Backend
+# Production Stop Script for Django Base App
 
 set -e  # Exit on error
 
-echo "🛑 Stopping This Is Me Backend..."
+echo "🛑 Stopping Django Base App..."
 
 # Colors for output
 GREEN='\033[0;32m'

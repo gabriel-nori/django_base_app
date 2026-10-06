@@ -1,6 +1,6 @@
 # Production Setup - Quick Start Guide
 
-This document provides a streamlined guide to get your This Is Me Backend running in production.
+This document provides a streamlined guide to get your Django Base App running in production.
 
 ## ✅ What's Been Set Up
 
@@ -55,7 +55,7 @@ cp env.prod.example .env
 Edit `.env` and set these **required** variables:
 - `SECRET_KEY` - Generate with: `python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())'`
 - `DB_HOST` - Your external PostgreSQL host (e.g., `localhost`, `your-db.example.com`, AWS RDS endpoint)
-- `DB_NAME` - Your database name (e.g., `this_is_me_db`)
+- `DB_NAME` - Your database name (e.g., `db_name`)
 - `DB_USER` - Database user (e.g., `postgres`)
 - `DB_PASS` - Strong database password
 - `REDIS_HOST` - Your external Redis host (e.g., `localhost`, `your-redis.example.com`, AWS ElastiCache endpoint)
@@ -206,7 +206,7 @@ Then restart: `./restart.sh`
 └────────────────┬────────────────────────┘
                  │
 ┌────────────────▼────────────────────────┐
-│      This Is Me Backend                 │
+│      Django Base App                 │
 │      (Docker Container)                 │
 │      Gunicorn + Django                  │
 │      Port: 8000                         │

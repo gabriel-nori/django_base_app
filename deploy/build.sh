@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# Production Build Script for This Is Me Backend
+# Production Build Script for Django Base App
 
 set -e  # Exit on error
 
-echo "🏗️  Building This Is Me Backend for Production..."
+echo "🏗️  Building Django Base App for Production..."
 
 # Colors for output
 GREEN='\033[0;32m'
@@ -40,7 +40,7 @@ done
 # Build the Docker image (from project root, with deploy/Dockerfile)
 echo -e "${BLUE}🐳 Building Docker image...${NC}"
 cd "$PROJECT_ROOT"
-docker build -t this-is-me-backend:latest -f deploy/Dockerfile .
+docker build -t django-base-app:latest -f deploy/Dockerfile .
 
 echo -e "${GREEN}✅ Build completed successfully!${NC}"
 echo ""

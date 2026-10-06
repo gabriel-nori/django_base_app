@@ -1,6 +1,6 @@
-# This Is Me Backend - Production Deployment Guide
+# Django Base App - Production Deployment Guide
 
-This guide covers deploying the This Is Me Backend API in production using Docker.
+This guide covers deploying the Django Base App API in production using Docker.
 
 ## 📋 Prerequisites
 
@@ -117,14 +117,14 @@ docker compose -f docker-compose.prod.yml ps
 
 ```bash
 # Build image
-docker build -t this-is-me-backend:latest -f dockerfile .
+docker build -t django-base-app:latest -f dockerfile .
 
 # Run container (requires database setup)
 docker run -d \
-  --name this-is-me-backend \
+  --name django-base-app \
   --env-file .env \
   -p 8000:8000 \
-  this-is-me-backend:latest
+  django-base-app:latest
 ```
 
 ## 🔧 Configuration
@@ -144,7 +144,7 @@ docker run -d \
 | `USE_REDIS_CACHE` | Enable Redis caching | `true` | No |
 | `ALLOWED_HOSTS` | Allowed hosts (comma-separated) | - | Yes |
 | `PORT` | Application port | `8000` | No |
-| `APP_NAME` | Application name | `This Is Me` | No |
+| `APP_NAME` | Application name | `Django Base App` | No |
 | `LOG_LEVEL` | Logging level | `info` | No |
 
 ### Gunicorn Configuration
@@ -189,7 +189,7 @@ Access it at: `http://localhost:8000/api/health/`
 ### Container Health Status
 
 ```bash
-docker inspect --format='{{.State.Health.Status}}' this-is-me-backend
+docker inspect --format='{{.State.Health.Status}}' django-base-app
 ```
 
 ### Logs
@@ -219,7 +219,7 @@ docker compose -f docker-compose.prod.yml down -v
 
 ### Remove Docker images
 ```bash
-docker rmi this-is-me-backend:latest
+docker rmi django-base-app:latest
 ```
 
 ## 🌐 Reverse Proxy Setup (Nginx Example)

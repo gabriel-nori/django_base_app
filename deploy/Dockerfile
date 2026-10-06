@@ -1,5 +1,5 @@
 # Multi-stage build for production
-FROM python:3.10-alpine AS builder
+FROM python:3.13-alpine AS builder
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -8,6 +8,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1
 
 # Install system dependencies
+# For DB_ENGINE=mysql also add: mariadb-dev pkgconf
 RUN apk add --no-cache \
     build-base \
     libpq \
@@ -27,7 +28,7 @@ RUN pip install --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
 # Production stage
-FROM python:3.10-alpine
+FROM python:3.13-alpine
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -35,6 +36,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     ENV_NAME=PROD
 
 # Install runtime dependencies only
+# For DB_ENGINE=mysql also add: mariadb-connector-c
 RUN apk add --no-cache \
     libpq \
     postgresql-client
@@ -47,10 +49,13 @@ RUN addgroup -g 1000 appuser && \
 WORKDIR /backend
 
 # Copy Python dependencies from builder
-COPY --from=builder /usr/local/lib/python3.10/site-packages /usr/local/lib/python3.10/site-packages
-COPY --from=builder /usr/local/bin /usr/local/bin
+COPY --from=builder --chown=root:root /usr/local/lib/python3.13/site-packages /usr/local/lib/python3.13/site-packages
+COPY --from=builder --chown=root:root /usr/local/bin /usr/local/bin
 
-# Copy application code
+# Ensure appuser can read site-packages
+RUN chmod -R a+rX /usr/local/lib/python3.13/site-packages
+
+# Copy application code (includes backend/spa when the SPA build is placed there)
 COPY --chown=appuser:appuser backend/ .
 
 # Create static files directory with correct permissions

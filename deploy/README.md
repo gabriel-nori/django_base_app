@@ -1,6 +1,6 @@
 # Deploy Folder
 
-This folder contains all deployment-related files and scripts for the This Is Me Backend application.
+This folder contains all deployment-related files and scripts for the Django Base App application.
 
 ## 📁 Contents
 

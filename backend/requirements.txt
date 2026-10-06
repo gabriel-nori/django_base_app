@@ -1,33 +1,74 @@
-app==0.0.1
-asgiref==3.8.1
-attrs==25.3.0
-Django==5.2.8
-django-cors-headers==4.6.0
-django-filter==25.1
-django-jazzmin==3.0.1
-django-redis==5.4.0
-djangorestframework==3.16.0
-djangorestframework-simplejwt==5.4.0
-drf-yasg==1.21.10
-gunicorn==23.0.0
-importlib_resources==6.5.2
-inflection==0.5.1
-jsonschema==4.23.0
-jsonschema-specifications==2024.10.1
-Markdown==3.7
-packaging==24.2
-Pillow==11.0.0
-psycopg2==2.9.10
-PyJWT==2.10.1
-python-dotenv==1.0.1
-pytz==2025.2
-PyYAML==6.0.2
-redis==5.2.1
-referencing==0.36.2
-requests==2.32.3
-rpds-py==0.24.0
-sqlparse==0.5.3
+# Python 3.12+ (Django 6)
+
+# Core Django
+Django==6.0.9
+asgiref==3.12.1
+sqlparse==0.6.0
+pytz==2026.5
+
+# Django Extensions
+django-cors-headers==4.9.0
+django-filter==26.2
+django-jazzmin==3.0.5
+django-redis==7.0.0
+
+# REST Framework
+djangorestframework==3.18.1
+djangorestframework-simplejwt==5.5.1
+drf-yasg==1.21.17
+
+# Database
+# SQLite is built in. PostgreSQL driver below.
+# For DB_ENGINE=mysql also install: mysqlclient==2.3.0
+psycopg2==2.9.13
+
+# Cache
+redis==8.1.0
+
+# Authentication & Security
+PyJWT==2.15.1
+
+# API Client
+requests==2.34.2
+
+# Data Validation & Serialization
+jsonschema==4.26.0
+jsonschema-specifications==2025.9.1
+referencing==0.37.0
+rpds-py==2026.9.1
+
+# Image Processing
+Pillow==12.3.0
+
+# Configuration & Environment
+python-dotenv==1.2.4
+
+# Static Files
+whitenoise==6.12.0
+
+# Web Server
+gunicorn==26.2.0
+
+# Celery
+celery==5.6.3
+flower==2.2.0
+django-celery-results==2.6.0
+django-celery-beat==2.9.0
+
+# Documentation
+Markdown==3.11
+PyYAML==6.0.3
+uritemplate==4.2.0
 swagger-spec-validator==3.0.4
-typing_extensions==4.13.1
-uritemplate==4.1.1
-whitenoise==6.9.0
+
+# Utilities
+inflection==0.5.1
+packaging==26.3
+importlib_resources==7.1.0
+typing_extensions==4.16.0
+attrs==26.1.0
+click==8.5.0
+certifi==2026.7.22
+charset-normalizer==3.5.2
+idna==3.20
+urllib3==2.8.0

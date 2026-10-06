@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# Production Restart Script for This Is Me Backend
+# Production Restart Script for Django Base App
 
 set -e  # Exit on error
 
-echo "🔄 Restarting This Is Me Backend..."
+echo "🔄 Restarting Django Base App..."
 
 # Colors for output
 GREEN='\033[0;32m'

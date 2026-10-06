@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Database Management Script for This Is Me Backend
+# Database Management Script for Django Base App
 
 # Colors for output
 GREEN='\033[0;32m'
@@ -54,7 +54,7 @@ case $COMMAND in
     backup)
         BACKUP_FILE="backup_$(date +%Y%m%d_%H%M%S).sql"
         echo -e "${BLUE}💾 Creating database backup: $BACKUP_FILE${NC}"
-        $DOCKER_COMPOSE_CMD -f docker-compose.prod.yml exec -T db pg_dump -U ${DB_USER:-postgres} ${DB_NAME:-this_is_me_db} > $BACKUP_FILE
+        $DOCKER_COMPOSE_CMD -f docker-compose.prod.yml exec -T db pg_dump -U ${DB_USER:-postgres} ${DB_NAME:-db_name} > $BACKUP_FILE
         echo -e "${GREEN}✅ Backup saved to $BACKUP_FILE${NC}"
         ;;
     
@@ -69,7 +69,7 @@ case $COMMAND in
         read -p "Are you sure? (yes/no): " confirm
         if [ "$confirm" == "yes" ]; then
             echo -e "${BLUE}🔄 Restoring database...${NC}"
-            cat $2 | $DOCKER_COMPOSE_CMD -f docker-compose.prod.yml exec -T db psql -U ${DB_USER:-postgres} ${DB_NAME:-this_is_me_db}
+            cat $2 | $DOCKER_COMPOSE_CMD -f docker-compose.prod.yml exec -T db psql -U ${DB_USER:-postgres} ${DB_NAME:-db_name}
             echo -e "${GREEN}✅ Database restored${NC}"
         else
             echo -e "${YELLOW}Restore cancelled${NC}"
@@ -96,7 +96,7 @@ case $COMMAND in
     
     status)
         echo -e "${BLUE}📊 Database Status:${NC}"
-        $DOCKER_COMPOSE_CMD -f docker-compose.prod.yml exec db psql -U ${DB_USER:-postgres} -d ${DB_NAME:-this_is_me_db} -c "\dt"
+        $DOCKER_COMPOSE_CMD -f docker-compose.prod.yml exec db psql -U ${DB_USER:-postgres} -d ${DB_NAME:-db_name} -c "\dt"
         ;;
     
     help|*)

@@ -26,7 +26,7 @@ brew services start postgresql@15
 ```bash
 docker run -d \
   --name postgres \
-  -e POSTGRES_DB=this_is_me_db \
+  -e POSTGRES_DB=db_name \
   -e POSTGRES_USER=postgres \
   -e POSTGRES_PASSWORD=your_password \
   -p 5432:5432 \
@@ -41,9 +41,9 @@ docker run -d \
 sudo -u postgres psql
 
 # Create database and user
-CREATE DATABASE this_is_me_db;
+CREATE DATABASE db_name;
 CREATE USER your_user WITH PASSWORD 'your_password';
-GRANT ALL PRIVILEGES ON DATABASE this_is_me_db TO your_user;
+GRANT ALL PRIVILEGES ON DATABASE db_name TO your_user;
 \q
 ```
 
@@ -52,7 +52,7 @@ GRANT ALL PRIVILEGES ON DATABASE this_is_me_db TO your_user;
 Update your `.env`:
 ```env
 DB_HOST=localhost
-DB_NAME=this_is_me_db
+DB_NAME=db_name
 DB_USER=your_user
 DB_PASS=your_password
 DB_PORT=5432
@@ -86,7 +86,7 @@ DB_HOST=host.docker.internal
 3. **Configuration**:
 ```env
 DB_HOST=your-db-instance.abc123.us-east-1.rds.amazonaws.com
-DB_NAME=this_is_me_db
+DB_NAME=db_name
 DB_USER=postgres
 DB_PASS=your_secure_password
 DB_PORT=5432
@@ -106,7 +106,7 @@ DB_PORT=5432
 3. **Configuration**:
 ```env
 DB_HOST=your-cloud-sql-ip
-DB_NAME=this_is_me_db
+DB_NAME=db_name
 DB_USER=postgres
 DB_PASS=your_secure_password
 DB_PORT=5432
@@ -122,7 +122,7 @@ DB_PORT=5432
 2. **Configuration**:
 ```env
 DB_HOST=your-server.postgres.database.azure.com
-DB_NAME=this_is_me_db
+DB_NAME=db_name
 DB_USER=your_user@your-server
 DB_PASS=your_secure_password
 DB_PORT=5432
@@ -138,7 +138,7 @@ DB_PORT=5432
 2. **Configuration**:
 ```env
 DB_HOST=your-db-cluster.db.ondigitalocean.com
-DB_NAME=this_is_me_db
+DB_NAME=db_name
 DB_USER=doadmin
 DB_PASS=your_password
 DB_PORT=25060

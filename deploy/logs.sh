@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Production Logs Script for This Is Me Backend
+# Production Logs Script for Django Base App
 
 # Colors for output
 BLUE='\033[0;34m'

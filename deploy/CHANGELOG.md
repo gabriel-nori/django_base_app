@@ -56,7 +56,7 @@ If you were using the previous configuration with Docker PostgreSQL and Redis:
    # Backup Redis (if needed)
    docker compose -f docker-compose.prod.yml exec redis \
      redis-cli save
-   docker cp this-is-me-redis:/data/dump.rdb ./redis-backup.rdb
+   docker cp django-base-app-redis:/data/dump.rdb ./redis-backup.rdb
    ```
 
 2. **Set up external PostgreSQL and Redis** (see `EXTERNAL_SERVICES.md`)
@@ -83,7 +83,7 @@ If you need to keep using Docker containers for PostgreSQL and Redis, you can:
    services:
      db:
        image: postgres:15-alpine
-       container_name: this-is-me-db
+       container_name: django-base-app-db
        restart: unless-stopped
        environment:
          POSTGRES_DB: ${DB_NAME}
@@ -96,7 +96,7 @@ If you need to keep using Docker containers for PostgreSQL and Redis, you can:
      
      redis:
        image: redis:7-alpine
-       container_name: this-is-me-redis
+       container_name: django-base-app-redis
        restart: unless-stopped
        command: redis-server --requirepass ${REDIS_PASSWORD}
        volumes:
@@ -151,7 +151,7 @@ Required variables for external services:
 ```env
 # PostgreSQL (External)
 DB_HOST=your-postgres-host      # Required
-DB_NAME=this_is_me_db           # Required
+DB_NAME=db_name           # Required
 DB_USER=postgres                # Required
 DB_PASS=your_password           # Required
 DB_PORT=5432                    # Optional (default: 5432)

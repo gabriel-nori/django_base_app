@@ -1,34 +1,29 @@
 # DRF:
-from rest_framework.authentication import TokenAuthentication
-from rest_framework.authtoken.views import obtain_auth_token
-# from rest_framework.schemas import get_schema_view
-from rest_framework.routers import DefaultRouter
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 from drf_yasg import openapi
 
 # Django:
-from django.urls import include, path
+from django.urls import include, path, re_path
 from django.contrib import admin
 
 # Custom
+from config.views import spa_index
 from config import settings
 
 """
 URL configuration for backend project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/5.1/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
+    https://docs.djangoproject.com/en/5.2/topics/http/urls/
+
+Layout:
+    admin/            Django admin
+    api/public/       Open routes (api/public_urls.py)
+    api/private/      Authenticated routes (api/private_urls.py)
+    api/swagger/      API docs
+    everything else   SPA index.html, when SERVE_SPA=true
 """
 
 schema_view = get_schema_view(
@@ -39,12 +34,12 @@ schema_view = get_schema_view(
     ),
     public=True,
     permission_classes=(permissions.AllowAny,),
-    authentication_classes=(TokenAuthentication,),
+    authentication_classes=(JWTAuthentication,),
 )
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/', include('api.urls')),
+    path("admin/", admin.site.urls),
+    path("api/", include("api.urls")),
     path(
         "api/swagger/",
         schema_view.with_ui("swagger", cache_timeout=0),
@@ -52,3 +47,9 @@ urlpatterns = [
     ),
     path("api/", include("rest_framework.urls")),
 ]
+
+if settings.SERVE_SPA:
+    # Must be the last pattern: any non backend route falls back to the SPA
+    urlpatterns.append(
+        re_path(r"^(?!api/|admin/|static/).*$", spa_index, name="spa"),
+    )

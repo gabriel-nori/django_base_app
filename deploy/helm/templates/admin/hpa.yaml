@@ -1,0 +1,24 @@
+{{- if and .Values.admin.enabled .Values.admin.autoscaling.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "django-base-app.fullname" . }}-admin
+  labels:
+    {{- include "django-base-app.labels" . | nindent 4 }}
+    app.kubernetes.io/component: admin
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "django-base-app.fullname" . }}-admin
+  minReplicas: {{ .Values.admin.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.admin.autoscaling.maxReplicas }}
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.admin.autoscaling.targetCPUUtilizationPercentage }}
+{{- end }}
+

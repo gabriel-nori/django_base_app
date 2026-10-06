@@ -1,0 +1,64 @@
+{{- if .Values.workers.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "django-base-app.fullname" . }}-workers
+  labels:
+    {{- include "django-base-app.labels" . | nindent 4 }}
+    app.kubernetes.io/component: workers
+spec:
+  {{- if not .Values.workers.autoscaling.enabled }}
+  replicas: {{ .Values.workers.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "django-base-app.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: workers
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "django-base-app.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: workers
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "django-base-app.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.workers.command }}
+          command:
+            {{- toYaml .Values.workers.command | nindent 12 }}
+          {{- end }}
+          envFrom:
+            - configMapRef:
+                name: {{ include "django-base-app.fullname" . }}-config
+            - secretRef:
+                name: {{ default (printf "%s-secrets" (include "django-base-app.fullname" .)) .Values.secrets.externalSecretName }}
+          resources:
+            {{- toYaml .Values.workers.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}
+

@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# Production Run Script for This Is Me Backend
+# Production Run Script for Django Base App
 
 set -e  # Exit on error
 
-echo "🚀 Starting This Is Me Backend (Production)"
+echo "🚀 Starting Django Base App (Production)"
 
 # Colors for output
 GREEN='\033[0;32m'

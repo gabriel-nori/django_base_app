@@ -97,10 +97,10 @@ docker compose -f docker-compose.prod.yml down -v
 ### Docker Direct
 ```bash
 # Build image
-docker build -t this-is-me-backend:latest -f dockerfile .
+docker build -t django-base-app:latest -f dockerfile .
 
 # View images
-docker images | grep this-is-me
+docker images | grep django-base-app
 
 # View running containers
 docker ps
@@ -109,16 +109,16 @@ docker ps
 docker ps -a
 
 # Container logs
-docker logs -f this-is-me-backend
+docker logs -f django-base-app
 
 # Execute command in container
-docker exec -it this-is-me-backend python manage.py shell
+docker exec -it django-base-app python manage.py shell
 
 # Container stats
-docker stats this-is-me-backend
+docker stats django-base-app
 
 # Remove image
-docker rmi this-is-me-backend:latest
+docker rmi django-base-app:latest
 ```
 
 ## 🔧 Maintenance
@@ -141,10 +141,10 @@ git pull origin main
 docker compose -f docker-compose.prod.yml ps
 
 # Container health
-docker inspect --format='{{.State.Health.Status}}' this-is-me-backend
+docker inspect --format='{{.State.Health.Status}}' django-base-app
 
 # Resource usage
-docker stats this-is-me-backend
+docker stats django-base-app
 ```
 
 ### Cleanup
@@ -217,7 +217,7 @@ docker compose -f docker-compose.prod.yml exec backend python manage.py collects
 ### Check Health Status
 ```bash
 # Container health
-docker inspect --format='{{.State.Health.Status}}' this-is-me-backend
+docker inspect --format='{{.State.Health.Status}}' django-base-app
 
 # All containers status
 docker compose -f docker-compose.prod.yml ps
@@ -229,7 +229,7 @@ docker compose -f docker-compose.prod.yml ps
 docker stats
 
 # Specific container
-docker stats this-is-me-backend
+docker stats django-base-app
 
 # Disk usage
 docker system df

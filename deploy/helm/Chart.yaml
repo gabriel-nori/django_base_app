@@ -1,0 +1,7 @@
+apiVersion: v2
+name: django-base-app
+description: A Helm chart for Django Base App Django Application
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+

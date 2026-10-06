@@ -1,0 +1,221 @@
+image:
+  repository: ghcr.io/YOUR_GITHUB_USER/django-base-app
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "latest"
+
+imagePullSecrets:
+  - name: ghcr-pull-secret
+
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 8000
+
+ingress:
+  enabled: true
+  className: ""
+  annotations:
+    # kubernetes.io/ingress.class: nginx
+    # cert-manager.io/cluster-issuer: "letsencrypt-prod"
+  hosts:
+    - host: django-base-app.home.local
+      paths:
+        - path: /api
+          pathType: Prefix
+          service: api
+        - path: /admin
+          pathType: Prefix
+          service: admin
+        # Static files (admin, swagger) are served by WhiteNoise in the api pods
+        - path: /static
+          pathType: Prefix
+          service: api
+        # Uncomment when SERVE_SPA is "true" so the frontend is served by the api pods
+        # - path: /
+        #   pathType: Prefix
+        #   service: api
+        # Flower has its own ingress with path rewriting at templates/flower/ingress.yaml
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: {}
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+# Environment variables
+env:
+  ENV_NAME: "PROD"
+  # postgresql, mysql or sqlite (sqlite is not recommended with multiple replicas)
+  DB_ENGINE: "postgresql"
+  DB_NAME: "django_base_app"
+  DB_USER: "django_base_app"
+  DB_HOST: "postgres.home.local"
+  DB_PORT: "5432"
+  REDIS_HOST: "redis.home.local"
+  REDIS_PORT: "6379"
+  USE_REDIS_CACHE: "true"
+  ALLOWED_HOSTS: "django-base-app.home.local"
+  CORS_ALLOWED_ORIGINS: ""
+  LOG_LEVEL: "info"
+  LOG_TO_DB: "false"
+  LOG_REQUESTS: "false"
+  SERVE_SPA: "false"
+  # Celery will use Redis broker if CELERY_BROKER_URL is not set
+  # It will automatically construct from REDIS_HOST, REDIS_PORT, REDIS_PASSWORD
+
+# Secrets
+# If externalSecretName is set, the chart will not create a secret and will instead reference the existing one.
+# The existing secret must have keys corresponding to SECRET_KEY, DB_PASS, REDIS_PASSWORD, FLOWER_USER, FLOWER_PASSWORD.
+secrets:
+  externalSecretName: ""
+  # Values to use if externalSecretName is not set (ignored when externalSecretName is set)
+  values:
+    SECRET_KEY: "changeme"
+    DB_PASS: "changeme"
+    REDIS_PASSWORD: "changeme"
+    FLOWER_USER: "admin"
+    FLOWER_PASSWORD: "changeme"
+
+# Components configuration
+api:
+  enabled: true
+  replicaCount: 1
+  autoscaling:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 4
+    targetCPUUtilizationPercentage: 80
+  command:
+    - /bin/sh
+    - -c
+    - |
+      python manage.py migrate --noinput &&
+      python manage.py initialize_objects &&
+      gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 4 --threads 2 --worker-class gthread --worker-tmp-dir /dev/shm --log-level info --access-logfile - --error-logfile - --timeout 120 --graceful-timeout 30
+  resources:
+    requests:
+      cpu: 500m
+      memory: 512Mi
+    limits:
+      cpu: 1000m
+      memory: 1024Mi
+
+admin:
+  enabled: true
+  replicaCount: 1
+  autoscaling:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 2
+    targetCPUUtilizationPercentage: 80
+  # Same command as API for now, as admin is usually served by the same WSGI app
+  command: [] 
+  # If empty, uses default command (which we can fallback to API command or the Dockerfile CMD)
+  resources:
+    requests:
+      cpu: 500m
+      memory: 512Mi
+    limits:
+      cpu: 1000m
+      memory: 1024Mi
+
+
+workers:
+  enabled: true
+  replicaCount: 1
+  autoscaling:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 80
+  command:
+    - /bin/sh
+    - -c
+    - |
+      cd /backend && \
+      python3 -m celery -A config worker \
+        --loglevel=info \
+        --concurrency=4 \
+        --max-tasks-per-child=1000 \
+        --time-limit=1800 \
+        --soft-time-limit=1500
+  resources:
+    requests:
+      cpu: 1000m
+      memory: 1024Mi
+    limits:
+      cpu: 2000m
+      memory: 2048Mi
+
+beat:
+  enabled: true
+  replicaCount: 1
+  command:
+    - /bin/sh
+    - -c
+    - |
+      cd /backend && \
+      python3 -m celery -A config beat \
+        --loglevel=info \
+        --scheduler=django_celery_beat.schedulers:DatabaseScheduler
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+flower:
+  enabled: true
+  replicaCount: 1
+  port: 5555
+  command:
+    - /bin/sh
+    - -c
+    - |
+      cd /backend && \
+      python3 -m celery -A config flower \
+        --port=5555 \
+        --basic_auth="${FLOWER_USER:-admin}:${FLOWER_PASSWORD:-admin}"
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
